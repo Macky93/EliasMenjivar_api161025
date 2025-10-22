@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Zonas;
+use App\Models\Zona;
 
 class ZonaController extends Controller
 {
@@ -65,7 +65,7 @@ class ZonaController extends Controller
 
         if($idzona > 0){
             $Zona = new Zona();
-            $valores = $Zona->where('id_zona',$id_zona)->get();
+            $valores = $Zona->where('id_zona',$idzona)->get();
 
                 //VERIFICACION DE EXISTENCIA DE DATOS//
             if(!empty($valores)){
