@@ -11,3 +11,7 @@ Route::get('/user', function (Request $request) {
 Route::get('/zonas',[ZonaController::class,'obtenerZonas']); //plural
 
 Route::get('/zona/{idzona}',[ZonaController::class,'obtenerZona']); //singular
+
+Route::get('/zonaspais/{idpais}',[ZonaController::class,'obtenerZonapais']); //singular
+
+Route::post('/nuevazona',[ZonaController::class,'crearZona']);
