@@ -232,10 +232,81 @@ class ZonaController extends Controller
 
         return response()->json($respuesta,$estado);
 
-
-
-
-
     }
 
+        public function nuevoUsuario(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:100',
+            'email' => 'required|string|email|max:100|unique:users',
+            'password' => 'required|string|min:8'
+        ]);
+
+        $usuario = new User();
+        $usuario->name = $request->name;
+        $usuario->email = $request->email;
+        $usuario->password = Hash::make($request->password);
+        $usuario->save();
+
+        $token = $usuario->createToken('token_personal')->plainTextToken;
+
+        return response()->json([
+            "success" => true,
+            "status" => 201,
+            "msg" => "Usuario creado exitosamente",
+            "data" => [
+                "user" => $usuario,
+                "token" => $token
+            ]
+        ], 201);
+    }
+
+    /**
+     * POST /login
+     * Autentica un usuario y devuelve su token Sanctum.
+     */
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
+        $usuario = User::where('email', $request->email)->first();
+
+        if (!$usuario || !Hash::check($request->password, $usuario->password)) {
+            return response()->json([
+                "success" => false,
+                "status" => 401,
+                "msg" => "Credenciales incorrectas",
+                "errors" => ["code" => 401, "msg" => "Email o contraseña inválidos"]
+            ], 401);
+        }
+
+        $token = $usuario->createToken('token_personal')->plainTextToken;
+
+        return response()->json([
+            "success" => true,
+            "status" => 200,
+            "msg" => "Inicio de sesión exitoso",
+            "data" => [
+                "user" => $usuario,
+                "token" => $token
+            ]
+        ], 200);
+    }
+
+    /**
+     * GET /usuario
+     * Devuelve los datos del usuario autenticado (requiere token Sanctum).
+     */
+    public function usuario(Request $request)
+    {
+        return response()->json([
+            "success" => true,
+            "status" => 200,
+            "msg" => "Usuario autenticado",
+            "data" => $request->user()
+        ]);
+    }
 }

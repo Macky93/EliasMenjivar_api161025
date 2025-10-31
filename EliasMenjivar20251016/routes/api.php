@@ -4,6 +4,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ZonaController;
 
+
+// Ruta para obtener el usuario autenticado (requiere token Sanctum)
+Route::middleware('auth:sanctum')->get('/usuario', [ZonaController::class, 'usuario']);
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
@@ -15,3 +19,7 @@ Route::get('/zona/{idzona}',[ZonaController::class,'obtenerZona']); //singular
 Route::get('/zonaspais/{idpais}',[ZonaController::class,'obtenerZonapais']); //singular
 
 Route::post('/nuevazona',[ZonaController::class,'crearZona']);
+
+Route::post('/nuevoUsuario', [ZonaController::class, 'nuevoUsuario']); // registrar usuario
+
+Route::post('/login', [ZonaController::class, 'login']); // login de usuario
